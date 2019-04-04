@@ -1,0 +1,158 @@
+---
+title: "Woodruff - Thesis - R code"
+author: "Chelsea Woodruff"
+date: "3/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+myData0305 <- read.csv("~/Desktop/Thesis & Related Items/R Stuff/ThesisData03282019.csv")
+
+myData <- read.csv(paste("~/Desktop/Thesis & Related Items/R Stuff/ThesisData03282019.csv"), skip=2)
+
+names(myData) <- c("StartDate", "EndDate", "IPStatus", "Progress", "DurationSec", "Finished", "RecDate", "ResponseID", "DistChannel", "UserLang", "WouldBuy", "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16", "Q17", "Q18", "Q19", "Q20", "Q21", "Q22", "Q23", "Q24", "Q25", "PriorKnowledge", "Gender", "YearBorn", "ZipCode", "Income", "Race", "Education", "Citizen", "Q34", "Q35", "Q36")
+
+myData$Education <- ifelse(myData$Education =="Less than high school diploma", 1,
+  ifelse(myData$Education =="High school degree or equivalent (e.g. GED)", 2,
+  ifelse(myData$Education =="Some college, no degree", 3,
+  ifelse(myData$Education =="Associate degree (e.g. AA, AS)", 4,
+  ifelse(myData$Education =="Bachelor’s degree (e.g. BA, BS)", 5,
+  ifelse(myData$Education =="Master’s degree (e.g. MA, MS, MEd)", 6,
+  ifelse(myData$Education =="Professional degree (e.g. MD, DDS, DVM)", 7,
+  ifelse(myData$Education =="Doctorate (e.g. PhD, EdD)", 8, 'FAIL'
+))))))))
+
+myData$Income <- ifelse(myData$Income =="Less than $10,000", 1,
+  ifelse(myData$Income =="$10,000 - $24,999", 2, 
+  ifelse(myData$Income =="$25,000 - $49,999", 3, 
+  ifelse(myData$Income =="$50,000 - $74,999", 4,
+  ifelse(myData$Income =="$75,000 - $99,999", 5,
+  ifelse(myData$Income =="$100,000 - $124,999", 6,
+  ifelse(myData$Income =="$125,000 - $149,999", 7, 
+  ifelse(myData$Income =="$150,000 - $174,999", 8,
+  ifelse(myData$Income =="$175,000 – $199,999", 9,
+  ifelse(myData$Income =="$200,000 and higher", 10, 'FAIL'
+  ))))))))))
+
+myData$Race <- ifelse(myData$Race == 'White or Caucasian', 1, 0)
+```
+
+```{r}
+q2price = gsub("$", "", as.character(myData$Q2), fixed=T)
+tmp = unlist(lapply(strsplit(q2price, ","), function(x) max(as.numeric(x))))
+tmp = ifelse(is.infinite(tmp), NA, tmp)
+myData$Q2 = tmp
+myData_sub = na.omit(myData)
+```
+```{r}
+code_resp <- function(code) {
+  code_key = data.frame(code = c('Strongly agree', 'Agree', 'Somewhat agree', 'Neither agree nor disagree', 'Somewhat disagree', 'Disagree', 'Strongly disagree'), 
+                                      value = 7:1)
+  code_value = code_key$value[match(code, code_key$code)]
+  return(code_value)}
+
+myData_sub$Income <- ifelse(myData_sub$Income =="1", "LOW",
+ifelse(myData_sub$Income =="2", "LOW", 
+ifelse(myData_sub$Income =="3", "LOW", 
+ifelse(myData_sub$Income =="4", "MODERATE",
+ifelse(myData_sub$Income =="5", "MODERATE",
+ifelse(myData_sub$Income =="6", "MODERATE",
+ifelse(myData_sub$Income =="7", "MODERATE", 
+ifelse(myData_sub$Income =="8", "HIGH",
+ifelse(myData_sub$Income =="9", "HIGH",
+ifelse(myData_sub$Income =="10", "HIGH", 'FAIL'
+))))))))))
+
+myData_sub$Education <- ifelse(myData_sub$Education =="1", "LOW",
+ifelse(myData_sub$Education =="2", "LOW", 
+ifelse(myData_sub$Education =="3", "LOW", 
+ifelse(myData_sub$Education =="4", "MODERATE",
+ifelse(myData_sub$Education =="5", "MODERATE",
+ifelse(myData_sub$Education =="6", "HIGH",
+ifelse(myData_sub$Education =="7", "HIGH", 
+ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
+))))))))
+
+myData_sub$Q5<-code_resp(myData_sub$Q5)
+myData_sub$Q6<-code_resp(myData_sub$Q6)
+myData_sub$Q7<-code_resp(myData_sub$Q7)
+myData_sub$Q8<-code_resp(myData_sub$Q8)
+myData_sub$Q9<-code_resp(myData_sub$Q9)
+myData_sub$Q10<-code_resp(myData_sub$Q10)
+myData_sub$Q11<-code_resp(myData_sub$Q11)
+myData_sub$Q12<-code_resp(myData_sub$Q12)
+myData_sub$Q13<-code_resp(myData_sub$Q13)
+myData_sub$Q14<-code_resp(myData_sub$Q14)
+myData_sub$Q15<-code_resp(myData_sub$Q15)
+myData_sub$Q16<-code_resp(myData_sub$Q16)
+myData_sub$Q17<-code_resp(myData_sub$Q17)
+myData_sub$Q22<-code_resp(myData_sub$Q22)
+myData_sub$Q23<-code_resp(myData_sub$Q23)
+myData_sub$Q24<-code_resp(myData_sub$Q24)
+myData_sub$Q25<-code_resp(myData_sub$Q25)
+
+code_resp_reverse <- function(code) {
+  code_key_reverse = data.frame(code = c('Strongly agree', 'Agree', 'Somewhat agree', 'Neither agree nor disagree', 'Somewhat disagree', 'Disagree', 'Strongly disagree'), 
+                                      value = 1:7)
+  code_value_reverse = code_key_reverse$value[match(code, code_key_reverse$code)]
+  return(code_value_reverse)}
+
+myData_sub$Q18<-code_resp_reverse(myData_sub$Q18)
+myData_sub$Q19<-code_resp_reverse(myData_sub$Q19)
+myData_sub$Q20<-code_resp_reverse(myData_sub$Q20)
+myData_sub$Q21<-code_resp_reverse(myData_sub$Q21)
+
+myData_sub$HumanInterference <- ((myData_sub$Q5 + myData_sub$Q6 + myData_sub$Q7 + myData_sub$Q8 + myData_sub$Q9 + myData_sub$Q10 + myData_sub$Q11 + myData_sub$Q12)/8)
+
+myData_sub$EquityDevelopment <- ((myData_sub$Q13 + myData_sub$Q14 + myData_sub$Q15 + myData_sub$Q16 + myData_sub$Q17)/5)
+
+myData_sub$HumansOverNature <- ((myData_sub$Q18 + myData_sub$Q19 + myData_sub$Q20 + myData_sub$Q21)/4)
+
+myData_sub$DutiesNonhumans <- ((myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24 + myData_sub$Q25)/4)
+
+myData_sub$AllViews <- ((myData_sub$Q5 + myData_sub$Q6 + myData_sub$Q7 + myData_sub$Q8 + myData_sub$Q9 + myData_sub$Q10 + myData_sub$Q11 + myData_sub$Q12 + myData_sub$Q13 + myData_sub$Q14 + myData_sub$Q15 + myData_sub$Q16 + myData_sub$Q17 + myData_sub$Q18 + myData_sub$Q19 + myData_sub$Q20 + myData_sub$Q21 + myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24 + myData_sub$Q25)/21)
+
+myData_sub$Age <- (2019 - myData_sub$YearBorn)
+```
+
+```{r}
+library(dplyr)
+HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
+HumIn <- myData_sub[HumIn]
+CorHumin<- cor(HumIn)
+CorPlotHumin <- corrplot(CorHumin, method="circle")
+```
+
+```{r}
+
+mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = myData_sub)
+
+summary(mymodel)
+
+
+
+```
+
+
+```{r}
+mymod2 <- step(mymodel, scope = ~.^2)
+
+summary(mymod2)
+```
+
+#11% of variation is explained through the regression line
+
+
+```{r}
+boxplot(Q2 ~ Income, data = myData_sub)
+```
+```{r}
+boxplot(Q2 ~ Education, data = myData_sub)
+```
+```{r}
+plot(Q2 ~ Age, data = myData_sub) 
+```
+
