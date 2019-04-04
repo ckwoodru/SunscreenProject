@@ -40,6 +40,7 @@ myData$Income <- ifelse(myData$Income =="Less than $10,000", 1,
 myData$Race <- ifelse(myData$Race == 'White or Caucasian', 1, 0)
 ```
 
+Because some respondents did not answer all questions, we need to turn missing responses into NA expressions so we can still work with the data without getting error messages.
 ```{r}
 q2price = gsub("$", "", as.character(myData$Q2), fixed=T)
 tmp = unlist(lapply(strsplit(q2price, ","), function(x) max(as.numeric(x))))
@@ -47,34 +48,45 @@ tmp = ifelse(is.infinite(tmp), NA, tmp)
 myData$Q2 = tmp
 myData_sub = na.omit(myData)
 ```
+
+Next we need to write code to change the Likert-scale answers between Strongly Agree to Strongly Disagree into numerical values. Eventually we will use these values to find the average of the groups of questions. For example: Questions 5-12 ask the respondent how strongly they feel about statements regarding human interference with nature. So we titled Questions 5-12 Human Interference. 
+
+Environmental and Social Views Categories: HI (Human Interference), ED (Equity and Development), HON (Human Over Nature), NON (Duties to Nonhumans)
+
+These are the statements asked of the respondents:
+Q5: HI: Present levels of industrial activity are severely upsetting the natural environment.
+Q6: HI: Present levels of industrial activity are excessive and need to be reduced.
+Q7: HI: Humans should adapt to nature rather than modify it to suit us.
+Q8: HI: A change in basic attitudes is necessary in order to solve environmental problems.
+Q9: HI: Humans should live in harmony with the rest of nature.
+Q10: HI: Human interference with nature often results in disastrous consequences.
+Q11: HI: Humans are presently interfering too much with the natural environment.
+Q12: HI: People should have compassion and respect for the rest of nature.
+
+Q13: ED: There are limits to industrial growth.
+Q14: ED: Natural resources should be used primarily to provide for basic needs rather than material wealth.
+Q15: ED: Humans have moral duties and obligations to other humans.
+Q16: ED: Present generations of humans have moral duties and obligations to future human generations.
+Q17: ED: Satisfaction and a high quality of life are more important than money or material wealth.
+
+Q18: HON: Reversed: Humans have the right to alter nature to satisfy wants and desire.
+Q19: HON: Reversed: Maintaining economic growth is more important than protecting the natural environment.
+Q20: HON: Reversed: Humans have the right to reduce the number of species on Earth in order to promote economic development.
+Q21: HON: Reversed: Humans have the right to subdue and control the rest of nature.
+
+Q22: NON: The natural environment has value within itself regardles of any value that humans may place on it.
+Q23: NON: Humans have moral duties and obligations to other animal species.
+Q24: NON: Humans have moral duties and obligations to plants and trees.
+Q25: NON: Humans have moral duties and obligations to the non-living components of nature (e.g., rocks).
+
+Some social views need to be reversed because strongly disagree for those are pro-environment. These questions are Questions 18-21. 
+
 ```{r}
 code_resp <- function(code) {
   code_key = data.frame(code = c('Strongly agree', 'Agree', 'Somewhat agree', 'Neither agree nor disagree', 'Somewhat disagree', 'Disagree', 'Strongly disagree'), 
                                       value = 7:1)
   code_value = code_key$value[match(code, code_key$code)]
   return(code_value)}
-
-myData_sub$Income <- ifelse(myData_sub$Income =="1", "LOW",
-ifelse(myData_sub$Income =="2", "LOW", 
-ifelse(myData_sub$Income =="3", "LOW", 
-ifelse(myData_sub$Income =="4", "MODERATE",
-ifelse(myData_sub$Income =="5", "MODERATE",
-ifelse(myData_sub$Income =="6", "MODERATE",
-ifelse(myData_sub$Income =="7", "MODERATE", 
-ifelse(myData_sub$Income =="8", "HIGH",
-ifelse(myData_sub$Income =="9", "HIGH",
-ifelse(myData_sub$Income =="10", "HIGH", 'FAIL'
-))))))))))
-
-myData_sub$Education <- ifelse(myData_sub$Education =="1", "LOW",
-ifelse(myData_sub$Education =="2", "LOW", 
-ifelse(myData_sub$Education =="3", "LOW", 
-ifelse(myData_sub$Education =="4", "MODERATE",
-ifelse(myData_sub$Education =="5", "MODERATE",
-ifelse(myData_sub$Education =="6", "HIGH",
-ifelse(myData_sub$Education =="7", "HIGH", 
-ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
-))))))))
 
 myData_sub$Q5<-code_resp(myData_sub$Q5)
 myData_sub$Q6<-code_resp(myData_sub$Q6)
@@ -105,6 +117,8 @@ myData_sub$Q19<-code_resp_reverse(myData_sub$Q19)
 myData_sub$Q20<-code_resp_reverse(myData_sub$Q20)
 myData_sub$Q21<-code_resp_reverse(myData_sub$Q21)
 
+# Now we can find the averages of these categories:
+
 myData_sub$HumanInterference <- ((myData_sub$Q5 + myData_sub$Q6 + myData_sub$Q7 + myData_sub$Q8 + myData_sub$Q9 + myData_sub$Q10 + myData_sub$Q11 + myData_sub$Q12)/8)
 
 myData_sub$EquityDevelopment <- ((myData_sub$Q13 + myData_sub$Q14 + myData_sub$Q15 + myData_sub$Q16 + myData_sub$Q17)/5)
@@ -115,10 +129,37 @@ myData_sub$DutiesNonhumans <- ((myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24
 
 myData_sub$AllViews <- ((myData_sub$Q5 + myData_sub$Q6 + myData_sub$Q7 + myData_sub$Q8 + myData_sub$Q9 + myData_sub$Q10 + myData_sub$Q11 + myData_sub$Q12 + myData_sub$Q13 + myData_sub$Q14 + myData_sub$Q15 + myData_sub$Q16 + myData_sub$Q17 + myData_sub$Q18 + myData_sub$Q19 + myData_sub$Q20 + myData_sub$Q21 + myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24 + myData_sub$Q25)/21)
 
+# Since we asked what year they were born, we need to change that into the continuous varibale that is age:
+
 myData_sub$Age <- (2019 - myData_sub$YearBorn)
 ```
 
+Upon further inspection after trying to work with the data, we need to now change the Income and Education tiers into LOW, MODERATE, and HIGH categories to work with easier.
 ```{r}
+myData_sub$Income <- ifelse(myData_sub$Income =="1", "LOW",
+ifelse(myData_sub$Income =="2", "LOW", 
+ifelse(myData_sub$Income =="3", "LOW", 
+ifelse(myData_sub$Income =="4", "MODERATE",
+ifelse(myData_sub$Income =="5", "MODERATE",
+ifelse(myData_sub$Income =="6", "MODERATE",
+ifelse(myData_sub$Income =="7", "MODERATE", 
+ifelse(myData_sub$Income =="8", "HIGH",
+ifelse(myData_sub$Income =="9", "HIGH",
+ifelse(myData_sub$Income =="10", "HIGH", 'FAIL'
+))))))))))
+
+myData_sub$Education <- ifelse(myData_sub$Education =="1", "LOW",
+ifelse(myData_sub$Education =="2", "LOW", 
+ifelse(myData_sub$Education =="3", "LOW", 
+ifelse(myData_sub$Education =="4", "MODERATE",
+ifelse(myData_sub$Education =="5", "MODERATE",
+ifelse(myData_sub$Education =="6", "HIGH",
+ifelse(myData_sub$Education =="7", "HIGH", 
+ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
+))))))))
+```
+
+```{r, include=FALSE}
 library(dplyr)
 HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
 HumIn <- myData_sub[HumIn]
