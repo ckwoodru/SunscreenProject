@@ -159,7 +159,7 @@ ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
 ))))))))
 ```
 
-```{r, include=FALSE}
+```{r, echo=FALSE}
 library(dplyr)
 HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
 HumIn <- myData_sub[HumIn]
@@ -167,37 +167,4 @@ CorHumin<- cor(HumIn)
 CorPlotHumin <- corrplot(CorHumin, method="circle")
 ```
 
-```{r}
-
-mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = myData_sub)
-
-summary(mymodel)
-
-
-
-```
-
-
-```{r}
-mymod2 <- step(mymodel, scope = ~.^2)
-
-summary(mymod2)
-```
-
-#11% of variation is explained through the regression line
-
-
-```{r}
-boxplot(Q2 ~ Income, data = myData_sub)
-```
-```{r}
-boxplot(Q2 ~ Education, data = myData_sub)
-```
-```{r}
-plot(Q2 ~ Age, data = myData_sub) 
-```
-
-```{r}
-anova(mymod2)
-```
 
