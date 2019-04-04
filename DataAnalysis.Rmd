@@ -1,0 +1,38 @@
+---
+title: "Data Analysis"
+author: "Chelsea Woodruff"
+date: "4/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+To analyze the relationship that the demographics may have had with the maximum  price the respondent was willing to pay, we need to create a linear model including all variables:
+```{r}
+
+mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = myData_sub)
+
+summary(mymodel)
+
+```
+
+We can do an AIC stepwise analysis too:
+```{r}
+mymod2 <- step(mymodel, scope = ~.^2)
+
+summary(mymod2)
+```
+11% of variation is explained through regression line
+```{r}
+boxplot(Q2 ~ Income, data = myData_sub)
+boxplot(Q2 ~ Education, data = myData_sub)
+plot(Q2 ~ Age, data = myData_sub) 
+```
+
+We also want to see the results of an anova analysis to examine interaction:
+```{r}
+anova(mymod2)
+```
+
