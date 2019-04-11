@@ -8,12 +8,17 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+First we must upload the raw data from Qualtrics and clean it up nicely. We skip the first two rows because they include unwanted metadata provided by Qualtrics.
 ```{r}
 myData0305 <- read.csv("./RawDatafromQualtrics.csv")
 
 myData <- read.csv(paste("./RawDatafromQualtrics.csv"), skip=2)
 
+#Next we rename the columns so we can organize the processes better.
+
 names(myData) <- c("StartDate", "EndDate", "IPStatus", "Progress", "DurationSec", "Finished", "RecDate", "ResponseID", "DistChannel", "UserLang", "WouldBuy", "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16", "Q17", "Q18", "Q19", "Q20", "Q21", "Q22", "Q23", "Q24", "Q25", "PriorKnowledge", "Gender", "YearBorn", "ZipCode", "Income", "Race", "Education", "Citizen", "Q34", "Q35", "Q36")
+
+#Next we must change the tiers of education indicated by the respondents to be numerical:
 
 myData$Education <- ifelse(myData$Education =="Less than high school diploma", 1,
   ifelse(myData$Education =="High school degree or equivalent (e.g. GED)", 2,
@@ -24,6 +29,8 @@ myData$Education <- ifelse(myData$Education =="Less than high school diploma", 1
   ifelse(myData$Education =="Professional degree (e.g. MD, DDS, DVM)", 7,
   ifelse(myData$Education =="Doctorate (e.g. PhD, EdD)", 8, 'FAIL'
 ))))))))
+
+#And again for income tiers:
 
 myData$Income <- ifelse(myData$Income =="Less than $10,000", 1,
   ifelse(myData$Income =="$10,000 - $24,999", 2, 
@@ -36,6 +43,8 @@ myData$Income <- ifelse(myData$Income =="Less than $10,000", 1,
   ifelse(myData$Income =="$175,000 – $199,999", 9,
   ifelse(myData$Income =="$200,000 and higher", 10, 'FAIL'
   ))))))))))
+
+#We change the races to 1 or 0 whether the respondent indicated if they were minority or not:
 
 myData$Race <- ifelse(myData$Race == 'White or Caucasian', 1, 0)
 ```
@@ -130,7 +139,9 @@ myData_sub$DutiesNonhumans <- ((myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24
 myData_sub$AllViews <- ((myData_sub$Q5 + myData_sub$Q6 + myData_sub$Q7 + myData_sub$Q8 + myData_sub$Q9 + myData_sub$Q10 + myData_sub$Q11 + myData_sub$Q12 + myData_sub$Q13 + myData_sub$Q14 + myData_sub$Q15 + myData_sub$Q16 + myData_sub$Q17 + myData_sub$Q18 + myData_sub$Q19 + myData_sub$Q20 + myData_sub$Q21 + myData_sub$Q22 + myData_sub$Q23 + myData_sub$Q24 + myData_sub$Q25)/21)
 
 # Since we asked what year they were born, we need to change that into the continuous varibale that is age:
-
+```
+```{r}
+myData_sub$Age <- as.numeric(myData_sub$YearBorn)
 myData_sub$Age <- (2019 - myData_sub$YearBorn)
 ```
 
@@ -159,12 +170,7 @@ ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
 ))))))))
 ```
 
-```{r, echo=FALSE}
-library(dplyr)
-HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
-HumIn <- myData_sub[HumIn]
-CorHumin<- cor(HumIn)
-CorPlotHumin <- corrplot(CorHumin, method="circle")
+```{r}
+myData_sub <- write.csv(myData_sub, file = "./myData_sub.csv")
 ```
-
 

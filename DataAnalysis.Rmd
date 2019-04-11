@@ -8,31 +8,42 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+cleandata <- read.csv("myData_sub.csv")
+```
+
 
 To analyze the relationship that the demographics may have had with the maximum  price the respondent was willing to pay, we need to create a linear model including all variables:
 ```{r}
 
-mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = myData_sub)
+mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = cleandata)
 
 summary(mymodel)
 
 ```
 
-We can do an AIC stepwise analysis too:
+The AIC stepwise test is to show __ We will continue with the AIC stepwise analysis:
 ```{r}
 mymod2 <- step(mymodel, scope = ~.^2)
 
 summary(mymod2)
 ```
-11% of variation is explained through regression line
+We must use the last output with the smallest AIC number as our useable result to this test.
+11% of variation is explained through regression line.
 ```{r}
-boxplot(Q2 ~ Income, data = myData_sub)
-boxplot(Q2 ~ Education, data = myData_sub)
-plot(Q2 ~ Age, data = myData_sub) 
+boxplot(Q2 ~ Income, data = cleandata)
+boxplot(Q2 ~ Education, data = cleandata)
+plot(Q2 ~ Age, data = cleandata) 
 ```
 
 We also want to see the results of an anova analysis to examine interaction:
 ```{r}
 anova(mymod2)
 ```
-
+```{r, echo=FALSE}
+library(dplyr)
+HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
+HumIn <- cleandata[HumIn]
+CorHumin<- cor(HumIn)
+CorPlotHumin <- corrplot(CorHumin, method="circle")
+```

@@ -17,3 +17,6 @@ We begin to create models to examine interactions between the variables. In addi
 
 ### 4. Plots:
 Some preliminary boxplots and graphs to examine relationships.
+
+### 5. Data:
+All csv files necessary for project development.
