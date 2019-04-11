@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
-myData0305 <- read.csv("~/Desktop/Thesis & Related Items/R Stuff/ThesisData03282019.csv")
+myData0305 <- read.csv("./RawDatafromQualtrics.csv")
 
-myData <- read.csv(paste("~/Desktop/Thesis & Related Items/R Stuff/ThesisData03282019.csv"), skip=2)
+myData <- read.csv(paste("./RawDatafromQualtrics.csv"), skip=2)
 
 names(myData) <- c("StartDate", "EndDate", "IPStatus", "Progress", "DurationSec", "Finished", "RecDate", "ResponseID", "DistChannel", "UserLang", "WouldBuy", "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16", "Q17", "Q18", "Q19", "Q20", "Q21", "Q22", "Q23", "Q24", "Q25", "PriorKnowledge", "Gender", "YearBorn", "ZipCode", "Income", "Race", "Education", "Citizen", "Q34", "Q35", "Q36")
 
