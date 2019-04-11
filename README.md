@@ -6,17 +6,20 @@ The data is from 348 respondents via survey from Qualtrics (survey creation webs
 
 Here are the files pertinent to the project:
 
-### 1. RawDatafromQualtrics: 
-This is a csv file containing the non-transformed data values of the respondents as initially downloaded from Qualtrics. Transforming the values must occur to work with the data for analysis purposes.
-
-### 2. InitialDataProcessing: 
+### 1. InitialDataProcessing: 
 These is how we turn the Likert-scale questions into values 1-7 and turn tiers of Education and Income levels, etc. (from the Demographics) into numerical values or LOW, MODERATE, HIGH expressions. 
 
-### 3. Data Analysis: 
+### 2. Data Analysis: 
 We begin to create models to examine interactions between the variables. In addition, examining boxplots to better understand the results. We end by running an anova of the resulting model.
 
-### 4. Plots:
+### 3. Plots:
 Some preliminary boxplots and graphs to examine relationships.
 
-### 5. Data:
+### 4. Data:
 All csv files necessary for project development.
+
+- RawDatafromQualtrics: 
+This is a csv file containing the non-transformed data values of the respondents as initially downloaded from Qualtrics. Transforming the values must occur to work with the data for analysis purposes.
+
+- myData_sub:
+This is a version of "cleaned up" data after we've transformed the data to be more useable.
