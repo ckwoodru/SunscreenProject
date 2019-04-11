@@ -1,4 +1,4 @@
-Sunscreen Project
+### Sunscreen Project
 
 This project is presented by Chelsea Woodruff as the data and analysis side of her masters thesis project titled: An Assessment of Willingness to Pay for Coral-Safe Sunscreens.
 
