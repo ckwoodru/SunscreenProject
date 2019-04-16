@@ -21,10 +21,10 @@ Some preliminary boxplots and graphs to examine relationships.
 ### 4. Data:
 All csv files necessary for project development. The csv files are as follows:
 
--- #### RawDatafromQualtrics: 
+-- RawDatafromQualtrics: 
 This is a csv file containing the non-transformed data values of the respondents as initially downloaded from Qualtrics. Transforming the values must occur to work with the data for analysis purposes.
 
--- #### myData_sub:
+-- myData_sub:
 This is a version of "cleaned up" data after we've transformed the data to be more useable. We did this by the methods as outlined within the Initial Data Processing file.
 
 
