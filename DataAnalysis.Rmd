@@ -9,7 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
-cleandata <- read.csv("myData_sub.csv")
+cleandata <- read.csv("./myData_sub.csv")
+
+install.packages("ggplot2")
+install.packages("gridExtra")     
+install.packages("scatterplot3d") 
+install.packages("MASS") 
+library(ggplot2)
+library(gridExtra)
+library(scatterplot3d)
+library(MASS)
 ```
 
 
@@ -29,11 +38,17 @@ mymod2 <- step(mymodel, scope = ~.^2)
 summary(mymod2)
 ```
 We must use the last output with the smallest AIC number as our useable result to this test.
-11% of variation is explained through regression line.
+With the Adjusted R-squared value of 0.1129, this indicates that 11% of variation is explained through regression line.
 ```{r}
-boxplot(Q2 ~ Income, data = cleandata)
-boxplot(Q2 ~ Education, data = cleandata)
-plot(Q2 ~ Age, data = cleandata) 
+Agelm <- lm(Q2 ~ Age, data = cleandata)
+```
+
+```{r}
+
+boxplot(Q2 ~ Income, xlab = 'Income in Tiers', ylab = 'Price', main = 'Income vs. Price', data = cleandata)
+boxplot(Q2 ~ Education, xlab = 'Education in Tiers', ylab = 'Price', main = 'Education vs. Price', data = cleandata)
+plot(Q2 ~ Age, xlab = 'Age', ylab = 'Price', main = 'Age vs. Price', data = cleandata)
+albine(Agelm)
 ```
 
 We also want to see the results of an anova analysis to examine interaction:
