@@ -60,7 +60,7 @@ myData_sub = na.omit(myData)
 
 Next we need to write code to change the Likert-scale answers between Strongly Agree to Strongly Disagree into numerical values. Eventually we will use these values to find the average of the groups of questions. For example: Questions 5-12 ask the respondent how strongly they feel about statements regarding human interference with nature. So we titled Questions 5-12 Human Interference. 
 
-Environmental and Social Views Categories: HI (Human Interference), ED (Equity and Development), HON (Human Over Nature), NON (Duties to Nonhumans)
+Environmental and Social Views Categories: HI (Human Interference), ED (Equity and Development), HON (Humans Over Nature), NON (Duties to Nonhumans)
 
 These are the statements asked of the respondents:
 Q5: HI: Present levels of industrial activity are severely upsetting the natural environment.
@@ -121,6 +121,8 @@ code_resp_reverse <- function(code) {
   code_value_reverse = code_key_reverse$value[match(code, code_key_reverse$code)]
   return(code_value_reverse)}
 
+#Questions 18-21 indicated that pro-environment was on the low end of numbers so we must reverse the answers here to still gain accurate averages. These are the reversed answers here:
+
 myData_sub$Q18<-code_resp_reverse(myData_sub$Q18)
 myData_sub$Q19<-code_resp_reverse(myData_sub$Q19)
 myData_sub$Q20<-code_resp_reverse(myData_sub$Q20)
@@ -170,6 +172,7 @@ ifelse(myData_sub$Education =="8", "HIGH", 'FAIL'
 ))))))))
 ```
 
+We need to save all this transformed data separately from the raw data. We will call it myData_sub
 ```{r}
 myData_sub <- write.csv(myData_sub, file = "./myData_sub.csv")
 ```

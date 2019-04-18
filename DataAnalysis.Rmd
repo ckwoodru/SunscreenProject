@@ -30,8 +30,23 @@ mymodel <- lm(Q2 ~ Education + Gender + Income + Age + HumanInterference + Equit
 summary(mymodel)
 
 ```
+```{r}
+anova(mymodel)
+```
 
-The AIC stepwise test is to show __ We will continue with the AIC stepwise analysis:
+Next we might want to see if we can isolate just the demographic varibales to narrow our model's focus:
+```{r}
+demolm <- lm(Q2 ~ Education + Gender + Income + Age, data = cleandata)
+summary(demolm)
+```
+
+We'll do the same for the Environmental Attitudes variables:
+```{r}
+attitudeslm <- lm(Q2 ~ HumanInterference + EquityDevelopment + HumansOverNature + DutiesNonhumans, data = cleandata)
+summary(attitudeslm)
+```
+
+The AIC stepwise test is to build a predicting model by adding and eliminating variables:
 ```{r}
 mymod2 <- step(mymodel, scope = ~.^2)
 
@@ -41,24 +56,51 @@ We must use the last output with the smallest AIC number as our useable result t
 With the Adjusted R-squared value of 0.1129, this indicates that 11% of variation is explained through regression line.
 ```{r}
 Agelm <- lm(Q2 ~ Age, data = cleandata)
+summary(Agelm)
 ```
 
 ```{r}
 
 boxplot(Q2 ~ Income, xlab = 'Income in Tiers', ylab = 'Price', main = 'Income vs. Price', data = cleandata)
-boxplot(Q2 ~ Education, xlab = 'Education in Tiers', ylab = 'Price', main = 'Education vs. Price', data = cleandata)
-plot(Q2 ~ Age, xlab = 'Age', ylab = 'Price', main = 'Age vs. Price', data = cleandata)
-albine(Agelm)
+
 ```
+```{r}
+boxplot(Q2 ~ Education, xlab = 'Education in Tiers', ylab = 'Price', main = 'Education vs. Price', data = cleandata)
+```
+
+```{r}
+library(stats)
+plot(Q2 ~ Age, xlab = 'Age', ylab = 'Price', main = 'Age vs. Price', data = cleandata)
+abline(Agelm, col="blue")
+```
+```{r}
+library(stats)
+incomelm <- lm(Q2 ~ Income, data = cleandata)
+plot(Q2 ~ Income, xlab = 'Income', ylab = 'Price', main = 'Income vs. Price', data = cleandata)
+abline(incomelm, col="blue")
+```
+
+```{r}
+HumanInterferencelm <- lm(Q2 ~ HumanInterference, data = cleandata)
+summary(HumanInterferencelm)
+```
+```{r}
+plot(Q2 ~ HumanInterference, xlab = 'Human Interference', ylab = 'Price', main = 'Human Interference vs. Price', data = cleandata)
+abline(HumanInterferencelm, col="blue")
+```
+```{r}
+boxplot(Q2 ~ HumanInterference, xlab = 'Human Interference', ylab = 'Price', main = 'Human Interference vs. Price', data = cleandata)
+```
+```{r}
+anova(HumanInterferencelm)
+```
+
 
 We also want to see the results of an anova analysis to examine interaction:
 ```{r}
 anova(mymod2)
 ```
-```{r, echo=FALSE}
-library(dplyr)
-HumIn <- c("Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12")
-HumIn <- cleandata[HumIn]
-CorHumin<- cor(HumIn)
-CorPlotHumin <- corrplot(CorHumin, method="circle")
-```
+From above we can see some interaction happening. Most notably with the income and age variables. Human interference is the only solo variable to have a statstically significant P-value. 
+
+
+
